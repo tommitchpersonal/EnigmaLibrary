@@ -8,6 +8,13 @@ public class EnigmaMachine : IEnigmaMachine
 
     private int _numberOfLettersEncrypted = 1;
 
+    public EnigmaMachine(EnigmaSettings settings)
+    {
+        Settings = settings;
+
+        SetWheels(settings);
+    }
+
     public string Encrypt(string plainText)
     {
         CheckWhetherWheelsAreNull();
@@ -42,17 +49,7 @@ public class EnigmaMachine : IEnigmaMachine
     {
         Settings = newSettings;
 
-        if (newSettings?.WheelSettings == null)
-        {
-            return;
-        }
-
-        _wheels = new IWheel[newSettings.WheelSettings.Count()];
-
-        for (int i = 0; i < newSettings?.WheelSettings?.Count(); i++)
-        {
-            _wheels[i] = _wheelFactory.BuildWheel(newSettings.WheelSettings[i]);
-        }
+        SetWheels(newSettings);
     }
 
     public void Reset()
@@ -106,6 +103,21 @@ public class EnigmaMachine : IEnigmaMachine
     private bool ShouldRotateWheel(int wheelNumber)
     {
         return  _numberOfLettersEncrypted % (Math.Pow(26, wheelNumber)) == 0;
+    }
+
+    private void SetWheels(EnigmaSettings settings)
+    {
+            if (settings?.WheelSettings == null)
+        {
+            return;
+        }
+
+        _wheels = new IWheel[settings.WheelSettings.Count()];
+
+        for (int i = 0; i < settings?.WheelSettings?.Count(); i++)
+        {
+            _wheels[i] = _wheelFactory.BuildWheel(settings.WheelSettings[i]);
+        }
     }
 
  
