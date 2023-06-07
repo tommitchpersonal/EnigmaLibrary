@@ -1,7 +1,7 @@
 namespace EnigmaLibrary;
 public class EnigmaMachine : IEnigmaMachine
 {
-    public EnigmaSettings? Settings;
+    public EnigmaSettings? Settings {get; private set;}
     private readonly IWheelFactory _wheelFactory = new WheelFactory();
     private readonly IComponent _reflector = new Reflector();
     private IWheel[]? _wheels;
@@ -43,8 +43,6 @@ public class EnigmaMachine : IEnigmaMachine
         return outputCharacter.ToCharacter();
     }
 
-
-
     public void UpdateSettings(EnigmaSettings newSettings)
     {
         Settings = newSettings;
@@ -62,11 +60,6 @@ public class EnigmaMachine : IEnigmaMachine
         }
 
         _numberOfLettersEncrypted = 1;
-    }
-
-    public EnigmaSettings? GetSettings()
-    {
-        return Settings;
     }
 
     private int MapSingleNumber(int inputLetter)
@@ -107,7 +100,7 @@ public class EnigmaMachine : IEnigmaMachine
 
     private void SetWheels(EnigmaSettings settings)
     {
-            if (settings?.WheelSettings == null)
+        if (settings?.WheelSettings == null)
         {
             return;
         }
@@ -119,8 +112,6 @@ public class EnigmaMachine : IEnigmaMachine
             _wheels[i] = _wheelFactory.BuildWheel(settings.WheelSettings[i]);
         }
     }
-
- 
 
     private void CheckWhetherWheelsAreNull()
     {

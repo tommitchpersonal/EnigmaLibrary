@@ -21,4 +21,10 @@
     <ProjectReference Include="..\EnigmaLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestJsons/TestEnigmaSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
