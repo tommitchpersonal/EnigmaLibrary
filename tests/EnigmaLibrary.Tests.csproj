@@ -18,11 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EnigmaLibrary.csproj" />
+    <ProjectReference Include="..\src\EnigmaLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestJsons/TestEnigmaSettings.json">
+    <None Update="TestJsons\TestEnigmaSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
