@@ -1,15 +1,24 @@
+using log4net;
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
+
 namespace EnigmaLibrary;
+
+// Although this project is intended to be used solely for educational purposes, I have made the conscious decision to not log sensitive information such as plain text
+
 public class EnigmaMachine : IEnigmaMachine
 {
     public EnigmaSettings? Settings {get; private set;}
     private readonly IWheelFactory _wheelFactory = new WheelFactory();
     private readonly IComponent _reflector = new Reflector();
     private IWheel[]? _wheels;
+    private ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
     private int _numberOfLettersEncrypted = 1;
 
     public EnigmaMachine(EnigmaSettings settings)
     {
+        _log.Info("Generating new enigma machine");
         Settings = settings;
 
         SetWheels(settings);
@@ -18,6 +27,8 @@ public class EnigmaMachine : IEnigmaMachine
     public string Encrypt(string plainText)
     {
         CheckWhetherWheelsAreNull();
+
+        _log.Info("Encrypting full string plain text");
 
         var plainTextAsNumbers = plainText.ToIntArray();
         var cipherTextAsNumbers = new int[plainTextAsNumbers.Length];
@@ -31,20 +42,30 @@ public class EnigmaMachine : IEnigmaMachine
 
         Reset();
 
+        _log.Info($"Returning cipher text: {cipherText}");
+
         return cipherText;
     }
 
     public char EncryptCharacter(char inputCharacter)
     {
+        _log.Info("Encrypting single character");
+
         var asNumber = inputCharacter.ToInteger();
 
-        var outputCharacter = MapSingleNumber(asNumber);
+        var outputInteger = MapSingleNumber(asNumber);
 
-        return outputCharacter.ToCharacter();
+        var outputCharacter = outputInteger.ToCharacter();
+
+        _log.Info($"Returning character {outputCharacter}");
+
+        return outputCharacter;
     }
 
     public void UpdateSettings(EnigmaSettings newSettings)
     {
+        _log.Info("Updating settings");
+
         Settings = newSettings;
 
         SetWheels(newSettings);
@@ -52,6 +73,8 @@ public class EnigmaMachine : IEnigmaMachine
 
     public void Reset()
     {
+        _log.Info("Resetting settings");
+
         CheckWhetherWheelsAreNull();
 
         foreach (var wheel in _wheels!)
@@ -64,6 +87,8 @@ public class EnigmaMachine : IEnigmaMachine
 
     private int MapSingleNumber(int inputLetter)
     {
+        _log.Info("Mapping letter");
+
         if (inputLetter > 25)
         {
             return inputLetter;
@@ -84,11 +109,14 @@ public class EnigmaMachine : IEnigmaMachine
 
             if (ShouldRotateWheel(j))
             {
+                _log.Info($"Rotating wheel {j}");
                 _wheels[j].Rotate();
             }
         }
 
         _numberOfLettersEncrypted ++;
+        
+        _log.Info($"Letter mapped to {inputLetter}");
 
         return inputLetter;
     }
@@ -102,6 +130,7 @@ public class EnigmaMachine : IEnigmaMachine
     {
         if (settings?.WheelSettings == null)
         {
+            _log.Error("Wheels settings are null in wheels.");
             return;
         }
 
@@ -111,12 +140,15 @@ public class EnigmaMachine : IEnigmaMachine
         {
             _wheels[i] = _wheelFactory.BuildWheel(settings.WheelSettings[i]);
         }
+
+        _log.Info("Wheels set.");
     }
 
     private void CheckWhetherWheelsAreNull()
     {
         if (_wheels == null)
         {
+            _log.Error("Enigma machine wheels have not been initialised");
             throw new EncryptionException("Enigma machine wheels have not been initialised. Try setting the wheels by making a put request to the update endpoint.");
         }
     }
