@@ -1,7 +1,10 @@
+using log4net;
+
 public class Wheel : IWheel
 {
     private int[]? _currentState;
     private int _numberOfTimesRotated;
+    private ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
     public Wheel(WheelSetting settings)
     {
@@ -10,6 +13,8 @@ public class Wheel : IWheel
 
     public int Map(int input)
     {
+        var output = _currentState![input];
+        _log.Info($"Output from wheel: {output}");   
         return _currentState![input];
     }
 
@@ -25,6 +30,7 @@ public class Wheel : IWheel
             }
         }
 
+        _log.Info($"Output from reverse wheel: {output}");   
         return output;
     }
 

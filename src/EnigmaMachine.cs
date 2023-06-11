@@ -4,8 +4,6 @@ using log4net;
 
 namespace EnigmaLibrary;
 
-// Although this project is intended to be used solely for educational purposes, I have made the conscious decision to not log sensitive information such as plain text
-
 public class EnigmaMachine : IEnigmaMachine
 {
     public EnigmaSettings? Settings {get; private set;}
@@ -30,11 +28,15 @@ public class EnigmaMachine : IEnigmaMachine
 
         _log.Info("Encrypting full string plain text");
 
+        _log.Info($"Plain text: {plainText}");
+
         var plainTextAsNumbers = plainText.ToIntArray();
+
         var cipherTextAsNumbers = new int[plainTextAsNumbers.Length];
 
         for (var i = 0; i < plainTextAsNumbers.Count(); i++)
         {
+            _log.Info($"Mapping: {plainTextAsNumbers[i]}");
             cipherTextAsNumbers[i] = MapSingleNumber(plainTextAsNumbers[i]);
         }
 
